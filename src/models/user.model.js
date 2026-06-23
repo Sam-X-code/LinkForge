@@ -36,9 +36,8 @@ const userSchema = new Schema(
 );
 
 userSchema.pre("save", async function (next) {
-    if(!this.isModified("password")) return next();
-    this.password = await bcrypt.hash(this.password , process.env.BCRYPT_SALT_ROUNDS);
-    next();
+    if(!this.isModified("password")) return ;
+    this.password = await bcrypt.hash(this.password , Number(process.env.BCRYPT_SALT_ROUNDS));
 });
 
 userSchema.methods.isPasswordCorrect = async function(password) {

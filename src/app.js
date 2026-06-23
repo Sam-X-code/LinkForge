@@ -1,6 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import userRouter from "./routes/user.route.js";
 
 const app =   express();
 
@@ -15,9 +16,11 @@ app.use(express.urlencoded({extended : true , limit : "16kb"}));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-// Test Route
-app.get("/", (req, res) => {
-    res.send("LinkForge Backend Running 🚀");
-});
+// routes
+app.use("/api/v1/users",userRouter)
+
+app.get('/', (req, res) => {
+  res.send('Hello World')
+})
 
 export default app;

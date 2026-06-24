@@ -21,7 +21,7 @@ app.use(cookieParser());
 // routes
 app.use("/api/v1/users",userRouter)
 app.use("/api/v1/urls",urlRouter)
-app.get("/:shortCode", redirectUrl);
+app.get("/:id", redirectUrl);
 
 app.get('/', (req, res) => {
   res.send('Hello World')

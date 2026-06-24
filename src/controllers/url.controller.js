@@ -121,7 +121,10 @@ const getMyUrls = asyncHandler(async (req, res) => {
 
 const deleteUrl = asyncHandler(async (req, res) => {
 
-    const url = await Url.findById(req.params.id);
+    const url = await Url.findOne({
+        shortCode: req.params.shortCode
+    });
+
     if (!url) {
         throw new ApiError(404, "URL not found");
     }

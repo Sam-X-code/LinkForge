@@ -6,6 +6,6 @@ const urlRouter = express.Router();
 
 urlRouter.route("/create").post(verifyJWT, createShortUrl);
 urlRouter.route("/my-urls").get(verifyJWT, getMyUrls);
-urlRouter.route("/:id").delete(verifyJWT,deleteUrl);
+urlRouter.route("/delete/:shortCode").delete(verifyJWT, deleteUrl);
 
 export default urlRouter;

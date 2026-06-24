@@ -6,7 +6,7 @@ import  ApiResponse  from "../utils/ApiResponse.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
     try {
-            const user = await User.findById(userId);
+        const user = await User.findById(userId);
         if (!user) {
             throw new ApiError(404, "User not found");
         }
@@ -83,7 +83,8 @@ const loginUser = asyncHandler(async(req , res) => {
 
     const options = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production"
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict"
     };
 
     return res.status(200)
@@ -99,9 +100,40 @@ const loginUser = asyncHandler(async(req , res) => {
 
 })
 
+// ..............logout user............................
+const logoutUser = asyncHandler(async(req,res) => {
+    
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $unset: {
+                refreshToken: 1
+            }
+        }
+    );
 
-export {
-    registerUser,
-    loginUser
-};
+    const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict"
+    };
+
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(
+        new ApiResponse(
+            200,
+            {},
+            "User logged out successfully"
+        )
+    );
+
+})
+
+
+
+
+export {registerUser,loginUser,logoutUser};
 

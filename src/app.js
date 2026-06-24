@@ -2,6 +2,8 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import userRouter from "./routes/user.route.js";
+import urlRouter from "./routes/url.routes.js";
+import { redirectUrl } from "./controllers/url.controller.js";
 
 const app =   express();
 
@@ -18,6 +20,8 @@ app.use(cookieParser());
 
 // routes
 app.use("/api/v1/users",userRouter)
+app.use("/api/v1/urls",urlRouter)
+app.get("/:shortCode", redirectUrl);
 
 app.get('/', (req, res) => {
   res.send('Hello World')

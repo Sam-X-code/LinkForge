@@ -10,4 +10,5 @@ userRouter.route("/login").post(loginUser);
 userRouter.route("/logout").post(verifyJWT,logoutUser);
 
 
+
 export default userRouter;

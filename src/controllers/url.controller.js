@@ -145,4 +145,44 @@ const deleteUrl = asyncHandler(async (req, res) => {
 });
 
 
-export  {createShortUrl,redirectUrl,getMyUrls,deleteUrl};
+
+
+// ....................url Analytics....................
+const getAnalytics = asyncHandler(async(req,res) =>{
+
+    const url = await Url.findOne({
+        shortCode: req.params.shortCode
+    });
+    
+    if(!url){
+        throw new ApiError(404,"Short URL not found");
+    }
+
+    if (url.owner.toString() !== req.user._id.toString()) {
+        throw new ApiError(
+            403,
+            "Forbidden"
+        );
+    }
+
+    const shortUrl = `${process.env.BASE_URL}/${url.shortCode}`;
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                originalUrl: url.originalUrl,
+                shortCode: url.shortCode,
+                shortUrl,
+                clicks: url.clicks,
+                createdAt: url.createdAt,
+                updatedAt: url.updatedAt
+            },
+            "Analytics fetched successfully"
+        )
+    )
+
+})
+
+
+export  {createShortUrl,redirectUrl,getMyUrls,deleteUrl,getAnalytics};

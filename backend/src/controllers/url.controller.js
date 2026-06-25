@@ -10,10 +10,15 @@ import { nanoid } from "nanoid";
 
 const createShortUrl = asyncHandler( async (req,res) => {
 
-    const { originalUrl, customAlias } = req.body;
+    let { originalUrl, customAlias } = req.body;
+
+    if (!/^https?:\/\//i.test(originalUrl)) {
+        originalUrl = `https://${originalUrl}`;
+    }
+
     if (!validator.isURL(originalUrl)) {
         throw new ApiError(400, "Invalid URL");
-    };
+    }
 
     if(customAlias){
         const existingUrl = await Url.findOne({

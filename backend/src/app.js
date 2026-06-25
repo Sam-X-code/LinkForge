@@ -4,8 +4,9 @@ import cors from "cors";
 import userRouter from "./routes/user.route.js";
 import urlRouter from "./routes/url.routes.js";
 import { redirectUrl } from "./controllers/url.controller.js";
+import errorHandler from "./middlewares/error.middleware.js";
 
-const app =   express();
+const app = express();
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN ,
@@ -26,5 +27,7 @@ app.get("/:shortCode", redirectUrl);
 app.get('/', (req, res) => {
   res.send('Hello World')
 })
+
+app.use(errorHandler)
 
 export default app;

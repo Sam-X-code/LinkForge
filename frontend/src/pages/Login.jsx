@@ -26,8 +26,9 @@ export default function Login() {
                 navigate("/dashboard");
             }
         }
-        catch(error){
-            console.log(error);
+        catch (error) {
+            console.error(error);
+            alert(error.response?.data?.message || "Something went wrong");
         }
 
     }

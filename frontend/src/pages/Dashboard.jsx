@@ -1,9 +1,12 @@
 import { useState ,useEffect} from "react";
+import toast from "react-hot-toast";
 import api from "../api/axios";
+import CreateUrlForm from "../components/CreateUrlForm";
 
 export default function Dashboard() {
 
     const [urls, setUrls] = useState([]);
+
     const fetchUrls = async () => {
         try {
             const response = await api.get("/urls/my-urls");
@@ -13,15 +16,34 @@ export default function Dashboard() {
         }
     };
 
-    useEffect(() => {
-        fetchUrls();
-    }, []);
+    const handleCopy = async (shortCode) => {
+        const shortUrl = `http://localhost:8000/${shortCode}`;
+
+        try {
+            await navigator.clipboard.writeText(shortUrl);
+            alert("Copied!");
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleDelete = async (shortCode) => {
+        try {
+            await api.delete(`/urls/delete/${shortCode}`);
+            fetchUrls();
+            alert("deleted!");
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     useEffect(() => {
         fetchUrls();
     }, []);
 
     return (
+        <div>
+        <CreateUrlForm fetchUrls={fetchUrls} />
         <div className="min-h-screen bg-gray-100 p-8">
             <div className="max-w-6xl mx-auto">
 
@@ -88,6 +110,7 @@ export default function Dashboard() {
                                 <div className="flex justify-center gap-2">
 
                                     <button
+                                        onClick={() => handleCopy(url.shortCode)}
                                         className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
                                     >
                                         Copy
@@ -100,6 +123,7 @@ export default function Dashboard() {
                                     </button>
 
                                     <button
+                                        onClick={() => handleDelete(url.shortCode)}
                                         className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
                                     >
                                         Delete
@@ -112,6 +136,7 @@ export default function Dashboard() {
 
                 </div>
             </div>
+        </div>
         </div>
     );
 }

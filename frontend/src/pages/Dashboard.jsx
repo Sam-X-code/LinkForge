@@ -2,10 +2,13 @@ import { useState ,useEffect} from "react";
 import toast from "react-hot-toast";
 import api from "../api/axios";
 import CreateUrlForm from "../components/CreateUrlForm";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Dashboard() {
 
     const [urls, setUrls] = useState([]);
+    const navigate = useNavigate();
 
     const fetchUrls = async () => {
         try {
@@ -21,9 +24,9 @@ export default function Dashboard() {
 
         try {
             await navigator.clipboard.writeText(shortUrl);
-            alert("Copied!");
+            toast.success("Copied to clipboard!");
         } catch (error) {
-            console.log(error);
+            toast.error("Failed to copy");
         }
     };
 
@@ -31,14 +34,35 @@ export default function Dashboard() {
         try {
             await api.delete(`/urls/delete/${shortCode}`);
             fetchUrls();
-            alert("deleted!");
+            toast.success("deleted!");
         } catch (error) {
-            console.error(error);
+            toast.error("Something went wrong!");
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await api.post("/users/logout");
+            toast.success("Logged out successfully!")
+            navigate("/");
+        } 
+        catch (error) {
+            toast.error(error.response?.data?.message || "Logout failed");
         }
     };
 
     useEffect(() => {
         fetchUrls();
+
+        const handleFocus = () => {
+            fetchUrls();
+        };
+
+        window.addEventListener("focus", handleFocus);
+
+        return () => {
+            window.removeEventListener("focus", handleFocus);
+        };
     }, []);
 
     return (
@@ -47,26 +71,17 @@ export default function Dashboard() {
         <div className="min-h-screen bg-gray-100 p-8">
             <div className="max-w-6xl mx-auto">
 
-                <div className="flex justify-between items-center mb-8">
+                <div className="flex justify-between px-1.5 items-center mb-8">
                     <h1 className="text-4xl font-bold text-blue-600">
                         LinkForge Dashboard
                     </h1>
+                    <button
+                    onClick={() => handleLogout()}
+                    className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg transition duration-200 shadow">
+                        Logout
+                    </button>
 
-                    <div className="flex gap-3">
-
-                        <button
-                            onClick={fetchUrls}
-                            className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg transition duration-200 shadow"
-                        >
-                            🔄 Refresh
-                        </button>
-
-                        <button className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg transition duration-200 shadow"
-                        >
-                            Logout
-                        </button>
-
-                    </div>
+            
                 </div>
 
                 <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -117,6 +132,7 @@ export default function Dashboard() {
                                     </button>
 
                                     <button
+                                        onClick={() => navigate(`/analytics/${url.shortCode}`)}
                                         className="bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-1 rounded"
                                     >
                                         Analytics

@@ -57,7 +57,6 @@ const createShortUrl = asyncHandler( async (req,res) => {
 
 
 
-
 // ...................redirect url...............
 
 
@@ -153,6 +152,8 @@ const deleteUrl = asyncHandler(async (req, res) => {
 
 
 // ....................url Analytics....................
+
+
 const getAnalytics = asyncHandler(async(req,res) =>{
 
     const url = await Url.findOne({
@@ -188,6 +189,8 @@ const getAnalytics = asyncHandler(async(req,res) =>{
     )
 
 })
+
+
 
 
 export  {createShortUrl,redirectUrl,getMyUrls,deleteUrl,getAnalytics};

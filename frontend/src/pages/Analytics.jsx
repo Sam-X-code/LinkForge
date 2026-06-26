@@ -104,7 +104,7 @@ export default function Analytics() {
                         Created At
                     </h2>
 
-                    <p className="font-semibold text-sm sm:text-base break-words">
+                    <p className="font-semibold text-sm sm:text-base wrap-break-word">
                         {new Date(analytics.createdAt).toLocaleString()}
                     </p>
                 </div>

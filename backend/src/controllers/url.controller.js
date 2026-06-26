@@ -4,6 +4,7 @@ import ApiError from "../utils/ApiError.js";
 import  ApiResponse  from "../utils/ApiResponse.js";
 import validator from "validator";
 import { nanoid } from "nanoid";
+import redisClient from "../config/redis.js";
 
 // ...............create short url .........................
 
@@ -63,6 +64,18 @@ const createShortUrl = asyncHandler( async (req,res) => {
 
 const redirectUrl = asyncHandler(async (req, res) => {
     const { shortCode } = req.params;
+    const cachedUrl = await redisClient.get(shortCode);
+
+    if(cachedUrl){
+        await Url.updateOne({ shortCode },
+        {
+            $inc: {
+                clicks: 1
+            }
+        });
+
+        return res.redirect(cachedUrl);
+    }
 
     const url = await Url.findOne({
         shortCode
@@ -75,14 +88,22 @@ const redirectUrl = asyncHandler(async (req, res) => {
         );
     }
 
-    await Url.findByIdAndUpdate(
-        url._id,
+    await Url.updateOne({ shortCode },
         {
             $inc: {
                 clicks: 1
             }
         }
     );
+
+    await redisClient.set(shortCode,
+        url.originalUrl,
+        {
+            EX: 3600
+        }
+    );
+
+
 
     return res.redirect(url.originalUrl);
 });
@@ -138,6 +159,11 @@ const deleteUrl = asyncHandler(async (req, res) => {
     }
 
     await url.deleteOne();
+    try {
+        await redisClient.del(url.shortCode);
+    } catch (error) {
+        console.error("Redis cache invalidation failed:", error);
+    }
 
     return res.status(200).json(
         new ApiResponse(

@@ -1,9 +1,11 @@
 import api from "../api/axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function Login() {
     const navigate = useNavigate();
+    const [loading,setLoading] = useState(false);
     const [identifier, setIdentifier] = useState("");
     const [password,setPassword] = useState("");
 
@@ -12,6 +14,8 @@ export default function Login() {
 
         try{
             console.log("Login button clicked");
+            setLoading(true);
+
             const loginData = {password};
 
             if (identifier.includes("@")) {
@@ -23,18 +27,22 @@ export default function Login() {
             const response = await api.post("/users/login",loginData);
 
             if (response.data.success) {
+                toast.success("LoggedIn Successfully!")
                 navigate("/dashboard");
             }
         }
         catch (error) {
             console.error(error);
-            alert(error.response?.data?.message || "Something went wrong");
+            toast.error(error.response?.data?.message || "Something went wrong");
+        }
+        finally{
+            setLoading(false);
         }
 
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
             <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8">
                 <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">
                     LinkForge
@@ -71,9 +79,15 @@ export default function Login() {
                     </div>
 
                     <button
-                        className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition"
+                        disabled = {loading}
+                        className={`w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition
+                            ${
+                            loading
+                                ? "bg-blue-400 cursor-not-allowed"
+                                : "bg-blue-600 hover:bg-blue-700"
+                            }`}
                     >
-                        Login
+                        {loading ? "Logging In..." : "LogIn"}
                     </button>
 
                 </form>

@@ -43,79 +43,75 @@ export default function Analytics() {
         );
     } 
         return (
-        
-            
-            <div className="min-h-screen bg-gray-100 p-8">
-                <div className="flex justify-between px-1.5">
-                <h1 className="text-4xl font-bold text-blue-600 mb-8">
-                    URL Analytics
-                </h1>
-                <button
-                    onClick={() => navigate("/dashboard")}
-                    className="mb-6 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg"
-                >
-                    ← Back to Dashboard
-                </button>
-                </div>
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold text-blue-600">
+                URL Analytics
+            </h1>
 
-                <div className="bg-white rounded-xl shadow-lg p-8 space-y-6">
+            <button
+                onClick={() => navigate("/dashboard")}
+                className="self-end sm:self-auto bg-gray-700 hover:bg-gray-800 text-white text-sm sm:text-base px-3 py-2 sm:px-4 rounded-lg transition"
+            >
+                ← Back to Dashboard
+            </button>
+        </div>
 
-                    <div>
-                        <h2 className="text-gray-500 font-semibold">
-                            Original URL
-                        </h2>
+        {/* Analytics Card */}
+        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 md:p-8 space-y-6">
+            {/* Original URL */}
+            <div>
+                <h2 className="text-gray-500 font-semibold text-sm sm:text-base">
+                    Original URL
+                </h2>
 
-                        <p className="text-lg break-all">
-                            {analytics.originalUrl}
-                        </p>
-                    </div>
-
-                    <div>
-                        <h2 className="text-gray-500 font-semibold">
-                            Short URL
-                        </h2>
-
-                        <a
-                            href={analytics.shortUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-blue-600 hover:underline"
-                        >
-                            {analytics.shortUrl}
-                        </a>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-6">
-
-                        <div className="bg-blue-50 rounded-lg p-5">
-                            <h2 className="text-gray-500 font-semibold">
-                                Total Clicks
-                            </h2>
-
-                            <p className="text-3xl font-bold text-blue-600">
-                                {analytics.clicks}
-                            </p>
-                        </div>
-
-                        <div className="bg-green-50 rounded-lg p-5">
-                            <h2 className="text-gray-500 font-semibold">
-                                Created At
-                            </h2>
-
-                            <p className="font-semibold">
-                                {new Date(
-                                    analytics.createdAt
-                                ).toLocaleString()}
-                            </p>
-                        </div>
-
-                    </div>
-
-                </div>
-
+                <p className="text-base sm:text-lg break-all">
+                    {analytics.originalUrl}
+                </p>
             </div>
-           
-        );
+
+            {/* Short URL */}
+            <div>
+                <h2 className="text-gray-500 font-semibold text-sm sm:text-base">
+                    Short URL
+                </h2>
+
+                <a
+                    href={analytics.shortUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-600 hover:underline break-all"
+                >
+                    {analytics.shortUrl}
+                </a>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-blue-50 rounded-lg p-5">
+                    <h2 className="text-gray-500 font-semibold text-sm sm:text-base">
+                        Total Clicks
+                    </h2>
+
+                    <p className="text-2xl sm:text-3xl font-bold text-blue-600">
+                        {analytics.clicks}
+                    </p>
+                </div>
+
+                <div className="bg-green-50 rounded-lg p-5">
+                    <h2 className="text-gray-500 font-semibold text-sm sm:text-base">
+                        Created At
+                    </h2>
+
+                    <p className="font-semibold text-sm sm:text-base break-words">
+                        {new Date(analytics.createdAt).toLocaleString()}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+);
 
 
 }

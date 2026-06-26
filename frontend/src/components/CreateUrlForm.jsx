@@ -5,14 +5,14 @@ import toast from "react-hot-toast";
 
 
 export default function CreateUrlForm({ fetchUrls }){
-
+    const [loading, setLoading] = useState(false);
     const [originalUrl,setOriginalUrl] = useState("");
     const [customAlias,setCustomAlias] = useState("");
 
     const handleCreate = async (e) => {
         e.preventDefault();
         try{
-           
+           setLoading(true);
             const response = await api.post("/urls/create",
                 {originalUrl,customAlias}
             );
@@ -27,6 +27,9 @@ export default function CreateUrlForm({ fetchUrls }){
         }
         catch (error) {
             toast.error(error.response.data.message);
+        }
+        finally{
+            setLoading(false);
         }
     }
 
@@ -72,9 +75,14 @@ export default function CreateUrlForm({ fetchUrls }){
 
                 <button
                     type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200"
+                    disabled = {loading}
+                    className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200
+                        ${
+                            loading ? "bg-blue-400 cursor-not-allowed"
+                                    : "bg-blue-600 hover:bg-blue-700"
+                        }`}
                 >
-                    Create Short URL
+                    {loading ? "Creating..." : "Create Short URL"}
                 </button>
 
             </form>

@@ -103,8 +103,6 @@ const redirectUrl = asyncHandler(async (req, res) => {
         }
     );
 
-
-
     return res.redirect(url.originalUrl);
 });
 

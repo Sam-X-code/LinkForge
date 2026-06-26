@@ -12,8 +12,16 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+        const authRoutes = [
+            "/users/login",
+            "/users/register",
+            "/users/refresh-token",
+        ];
+
+        const isAuthRoute = authRoutes.includes(originalRequest.url);
+
         if (error.response?.status === 401 &&
-            !originalRequest._retry) {
+            !originalRequest._retry && !isAuthRoute) {
             try {
                 originalRequest._retry = true;
                 await api.post("/users/refresh-token");

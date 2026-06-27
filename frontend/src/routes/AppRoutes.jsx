@@ -4,26 +4,37 @@ import Dashboard from "../pages/Dashboard";
 import Analytics from "../pages/Analytics";
 import Register from "../pages/Register";
 import ProtectedRoute from "../components/ProtectedRoute";
+import PublicRoute from "../components/PublicRoute";
 
 const AppRoutes = () => {
   return (
         <Routes>
+            <Route path="/" 
+                element={
+                    <PublicRoute>
+                        <Login />
+                    </PublicRoute>
+                }
+            />
 
-            <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
+
             <Route path="/dashboard"
-                   element={
-                        <ProtectedRoute>
-                            <Dashboard />
-                        </ProtectedRoute>
-                    } />
-            <Route path="/analytics/:shortCode" 
-                   element={
-                        <ProtectedRoute>
-                            <Analytics />
-                        </ProtectedRoute>
-                    } />
-                    
+                element={
+                    <ProtectedRoute>
+                        <Dashboard />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route path="/analytics/:shortCode"
+                element={
+                    <ProtectedRoute>
+                        <Analytics />
+                    </ProtectedRoute>
+                }
+            />
+            
         </Routes>
   )
 }

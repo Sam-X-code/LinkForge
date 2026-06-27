@@ -9,7 +9,7 @@ import rateLimiter from "./middlewares/rateLimiter.middleware.js";
 
 const app = express();
 
-// app.set("trust proxy", 1);  in deployment
+app.set("trust proxy", 1);
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN ,
@@ -28,7 +28,7 @@ app.use("/api/v1/urls",urlRouter)
 app.get("/:shortCode",rateLimiter(100,60),redirectUrl);
 
 app.get("/", (req, res) => {
-    return res.send("THIS IS MY APP");
+    res.send("LinkForge Backend Running 🚀");
 });
 
 app.use(errorHandler)

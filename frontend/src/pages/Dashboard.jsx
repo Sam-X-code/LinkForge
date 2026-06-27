@@ -19,7 +19,7 @@ export default function Dashboard() {
     };
 
     const handleCopy = async (shortCode) => {
-        const shortUrl = `http://localhost:8000/${shortCode}`;
+        const shortUrl = `${import.meta.env.VITE_BASE_URL}/${shortCode}`;
 
         try {
             await navigator.clipboard.writeText(shortUrl);

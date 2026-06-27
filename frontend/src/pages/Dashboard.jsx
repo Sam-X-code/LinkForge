@@ -47,7 +47,7 @@ export default function Dashboard() {
 
             toast.success("Logged out successfully!");
 
-            navigate("/");
+            navigate("/",{replace:true});
         } catch (error) {
             toast.error(error.response?.data?.message || "Logout failed");
         } finally {

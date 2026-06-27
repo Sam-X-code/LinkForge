@@ -5,13 +5,20 @@ import  ApiResponse  from "../utils/ApiResponse.js";
 import validator from "validator";
 import { nanoid } from "nanoid";
 import redisClient from "../config/redis.js";
+import calculateExpiry from "../utils/calculateExpiry.js";
 
 // ...............create short url .........................
 
 
 const createShortUrl = asyncHandler( async (req,res) => {
 
-    let { originalUrl, customAlias } = req.body;
+    let { originalUrl, customAlias , expiresIn } = req.body;
+    console.log(req.body);
+
+    const expiresAt = calculateExpiry(expiresIn);
+    console.log("expiresIn:", expiresIn);
+    console.log("expiresAt:", expiresAt);
+
 
     if (!/^https?:\/\//i.test(originalUrl)) {
         originalUrl = `https://${originalUrl}`;
@@ -38,7 +45,8 @@ const createShortUrl = asyncHandler( async (req,res) => {
     const url = await Url.create({
             originalUrl,
             shortCode,
-            owner: req.user._id
+            owner: req.user._id,
+            expiresAt
     });
 
     const shortUrl = `${process.env.BASE_URL}/${shortCode}`;
@@ -64,19 +72,33 @@ const createShortUrl = asyncHandler( async (req,res) => {
 
 const redirectUrl = asyncHandler(async (req, res) => {
     const { shortCode } = req.params;
-    const cachedUrl = await redisClient.get(shortCode);
+    const cachedData = await redisClient.get(shortCode);
 
-    if(cachedUrl){
-        await Url.updateOne({ shortCode },
-        {
-            $inc: {
-                clicks: 1
+    if (cachedData) {
+        const cached = JSON.parse(cachedData);
+
+        if (cached.expiresAt && Date.now() > new Date(cached.expiresAt).getTime()) {
+            await redisClient.del(shortCode);
+
+            throw new ApiError(
+                410,
+                "This link has expired."
+            );
+        }
+
+        await Url.updateOne(
+            { shortCode },
+            {
+                $inc: {
+                    clicks: 1
+                }
             }
-        });
+        );
 
-        return res.redirect(cachedUrl);
+        return res.redirect(cached.originalUrl);
     }
 
+// if not in cache 
     const url = await Url.findOne({
         shortCode
     });
@@ -88,6 +110,13 @@ const redirectUrl = asyncHandler(async (req, res) => {
         );
     }
 
+    if (url.expiresAt && Date.now() > url.expiresAt.getTime()){
+        throw new ApiError(
+            410,
+            "This link has expired."
+        );
+    }
+
     await Url.updateOne({ shortCode },
         {
             $inc: {
@@ -96,12 +125,28 @@ const redirectUrl = asyncHandler(async (req, res) => {
         }
     );
 
+    let ttl = 3600;
+
+    if (url.expiresAt) {
+        ttl = Math.min(
+            3600,
+            Math.max(
+                1,
+                Math.floor((url.expiresAt.getTime() - Date.now()) / 1000)
+            )
+        );
+    }
+    console.log("Caching:", shortCode);
     await redisClient.set(shortCode,
-        url.originalUrl,
+        JSON.stringify({
+            originalUrl: url.originalUrl,
+            expiresAt: url.expiresAt
+        }),
         {
-            EX: 3600
+            EX: ttl
         }
     );
+    console.log("Cached successfully");
 
     return res.redirect(url.originalUrl);
 });

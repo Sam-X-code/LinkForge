@@ -22,6 +22,10 @@ const urlSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "User",
             required: true
+        },
+        expiresAt: {
+            type: Date,
+            default: null
         }
     },{timestamps : true}
     

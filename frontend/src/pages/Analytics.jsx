@@ -48,7 +48,7 @@ export default function Analytics() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
 
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 URL Analytics
             </h1>
 
@@ -95,7 +95,7 @@ export default function Analytics() {
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
 
                 {/* Clicks */}
-                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 shadow-md text-white">
+                <div className="bg-linear-to-br from-blue-500 to-blue-600 rounded-2xl p-6 shadow-md text-white">
 
                     <h2 className="text-sm font-medium opacity-90">
                         👆 Total Clicks
@@ -140,7 +140,7 @@ export default function Analytics() {
                         📅 Created At
                     </h2>
 
-                    <p className="mt-3 text-gray-800 font-semibold break-words">
+                    <p className="mt-3 text-gray-800 font-semibold wrap-break-word">
                         {new Date(analytics.createdAt).toLocaleString()}
                     </p>
 
@@ -153,7 +153,7 @@ export default function Analytics() {
                         ⏳ Expires At
                     </h2>
 
-                    <p className="mt-3 text-gray-800 font-semibold break-words">
+                    <p className="mt-3 text-gray-800 font-semibold wrap-break-word">
                         {analytics.expiresAt
                             ? new Date(analytics.expiresAt).toLocaleString()
                             : "♾️ Never"}

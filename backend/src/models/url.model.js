@@ -31,6 +31,16 @@ const urlSchema = new Schema(
     
 );
 
+urlSchema.virtual("isActive").get(function () {
+    return (
+        !this.expiresAt ||
+        Date.now() < this.expiresAt.getTime()
+    );
+});
+
+urlSchema.set("toJSON", { virtuals: true });
+urlSchema.set("toObject", { virtuals: true });
+
 const Url = mongoose.model("Url" , urlSchema);
 export default Url;
 

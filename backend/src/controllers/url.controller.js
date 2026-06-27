@@ -251,7 +251,9 @@ const getAnalytics = asyncHandler(async(req,res) =>{
                 shortUrl,
                 clicks: url.clicks,
                 createdAt: url.createdAt,
-                updatedAt: url.updatedAt
+                updatedAt: url.updatedAt,
+                expiresAt: url.expiresAt,
+                isActive: url.isActive
             },
             "Analytics fetched successfully"
         )

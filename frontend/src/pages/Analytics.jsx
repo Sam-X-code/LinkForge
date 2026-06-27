@@ -42,74 +42,129 @@ export default function Analytics() {
             </div>
         );
     } 
-        return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
+    return (
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
+
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-blue-600">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 URL Analytics
             </h1>
 
             <button
                 onClick={() => navigate("/dashboard")}
-                className="self-end sm:self-auto bg-gray-700 hover:bg-gray-800 text-white text-sm sm:text-base px-3 py-2 sm:px-4 rounded-lg transition"
+                className="bg-gray-800 hover:bg-gray-900 text-white px-5 py-2.5 rounded-xl transition-all shadow-md"
             >
                 ← Back to Dashboard
             </button>
+
         </div>
 
-        {/* Analytics Card */}
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 md:p-8 space-y-6">
+        {/* Main Card */}
+        <div className="bg-white rounded-3xl shadow-xl border border-gray-200 p-6 md:p-8 space-y-8">
+
             {/* Original URL */}
-            <div>
-                <h2 className="text-gray-500 font-semibold text-sm sm:text-base">
-                    Original URL
+            <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5">
+                <h2 className="text-sm font-semibold text-gray-500 mb-2">
+                    🌐 Original URL
                 </h2>
 
-                <p className="text-base sm:text-lg break-all">
+                <p className="text-gray-800 break-all font-medium">
                     {analytics.originalUrl}
                 </p>
             </div>
 
             {/* Short URL */}
-            <div>
-                <h2 className="text-gray-500 font-semibold text-sm sm:text-base">
-                    Short URL
+            <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5">
+                <h2 className="text-sm font-semibold text-gray-500 mb-2">
+                    🔗 Short URL
                 </h2>
 
                 <a
                     href={analytics.shortUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-blue-600 hover:underline break-all"
+                    className="text-blue-600 hover:text-blue-700 hover:underline break-all font-medium"
                 >
                     {analytics.shortUrl}
                 </a>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-blue-50 rounded-lg p-5">
-                    <h2 className="text-gray-500 font-semibold text-sm sm:text-base">
-                        Total Clicks
+            {/* Analytics Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+
+                {/* Clicks */}
+                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 shadow-md text-white">
+
+                    <h2 className="text-sm font-medium opacity-90">
+                        👆 Total Clicks
                     </h2>
 
-                    <p className="text-2xl sm:text-3xl font-bold text-blue-600">
+                    <p className="mt-4 text-4xl font-bold">
                         {analytics.clicks}
                     </p>
+
                 </div>
 
-                <div className="bg-green-50 rounded-lg p-5">
-                    <h2 className="text-gray-500 font-semibold text-sm sm:text-base">
-                        Created At
+                {/* Status */}
+                <div
+                    className={`rounded-2xl p-6 shadow-sm border transition ${
+                        analytics.isActive
+                            ? "bg-green-50 border-green-200"
+                            : "bg-red-50 border-red-200"
+                    }`}>
+
+                    <h2 className="text-sm text-gray-500 font-semibold">
+                        🚦 Status
                     </h2>
 
-                    <p className="font-semibold text-sm sm:text-base wrap-break-word">
+                    <p
+                        className={`mt-4 text-2xl font-bold ${
+                            analytics.isActive
+                                ? "text-green-600"
+                                : "text-red-600"
+                        }`}
+                    >
+                        {analytics.isActive
+                            ? "🟢 Active"
+                            : "🔴 Expired"}
+                    </p>
+
+                </div>
+
+                {/* Created */}
+                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 hover:shadow-lg transition">
+
+                    <h2 className="text-sm text-gray-500 font-semibold">
+                        📅 Created At
+                    </h2>
+
+                    <p className="mt-3 text-gray-800 font-semibold break-words">
                         {new Date(analytics.createdAt).toLocaleString()}
                     </p>
+
                 </div>
+
+                {/* Expiry */}
+                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 hover:shadow-lg transition">
+
+                    <h2 className="text-sm text-gray-500 font-semibold">
+                        ⏳ Expires At
+                    </h2>
+
+                    <p className="mt-3 text-gray-800 font-semibold break-words">
+                        {analytics.expiresAt
+                            ? new Date(analytics.expiresAt).toLocaleString()
+                            : "♾️ Never"}
+                    </p>
+
+                </div>
+
             </div>
+
         </div>
+
     </div>
 );
 

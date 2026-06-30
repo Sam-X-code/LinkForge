@@ -70,7 +70,7 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-100 to-gray-200 py-6 md:py-8">
+        <div className="min-h-screen bg-linear-to-br from-slate-100 to-gray-200 py-6 md:py-8">
             <div className="max-w-6xl mx-auto px-4">
                 {/* Header */}
                 <div className="bg-white rounded-2xl shadow-lg p-5 md:p-6 mb-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -110,7 +110,7 @@ export default function Dashboard() {
                 {/* URL Table */}
                 <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
                     {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-[2fr_2fr_1.5fr] bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-6 py-4">
+                    <div className="hidden md:grid grid-cols-[2fr_2fr_1.5fr] bg-linear-to-r from-blue-600 to-indigo-600 text-white font-semibold px-6 py-4">
                         <div className="text-left">Original URL</div>
                         <div className="text-left">Short URL</div>
                         <div className="text-center">Actions</div>

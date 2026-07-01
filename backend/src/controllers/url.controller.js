@@ -95,7 +95,7 @@ const redirectUrl = asyncHandler(async (req, res) => {
             referrer: req.get("Referer") || "Direct"
         });
 
-        return res.redirect(url.originalUrl);
+        return res.redirect(cached.originalUrl);
     }
 
 // if not in cache 
@@ -119,7 +119,7 @@ const redirectUrl = asyncHandler(async (req, res) => {
     }
 
    await publishClickEvent({
-        shortCode,
+        shortCode: url.shortCode,
         ip: req.ip,
         userAgent: req.get("User-Agent"),
         referrer: req.get("Referer") || "Direct"

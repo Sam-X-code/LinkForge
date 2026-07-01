@@ -8,6 +8,9 @@ export default function Analytics() {
     const navigate = useNavigate();
     const { shortCode } = useParams();
     const [analytics, setAnalytics] = useState(null);
+    const shortUrl = analytics
+    ? `${import.meta.env.VITE_BASE_URL}/${analytics.shortCode}`
+    : "";
 
     const fetchAnalytics = async () => {
         try {
@@ -82,12 +85,12 @@ export default function Analytics() {
                 </h2>
 
                 <a
-                    href={analytics.shortUrl}
+                    href={shortUrl}
                     target="_blank"
                     rel="noreferrer"
                     className="text-blue-600 hover:text-blue-700 hover:underline break-all font-medium"
                 >
-                    {analytics.shortUrl}
+                    {shortUrl}
                 </a>
             </div>
 

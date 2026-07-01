@@ -153,12 +153,12 @@ export default function Dashboard() {
                                     </p>
 
                                     <a
-                                        href={url.shortUrl}
+                                        href={`${import.meta.env.VITE_BASE_URL}/${url.shortCode}`}
                                         target="_blank"
                                         rel="noreferrer"
                                         className="text-blue-600 font-medium hover:text-blue-800 hover:underline break-all"
                                     >
-                                        {url.shortUrl}
+                                        {`${import.meta.env.VITE_BASE_URL}/${url.shortCode}`}
                                     </a>
                                 </div>
 

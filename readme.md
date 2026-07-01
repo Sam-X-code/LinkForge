@@ -4,8 +4,6 @@
 
 🌐 **Live Demo:** https://linkforge-mocha.vercel.app
 
-🚀 **Backend API:** https://linkforge-backend-7xib.onrender.com
-
 ---
 
 ## 📖 Overview
@@ -305,6 +303,8 @@ This endpoint can be used by monitoring systems and load balancers to verify app
 | Backend | Render |
 | Database | MongoDB Atlas |
 | Cache | Upstash Redis |
+
+Note: The distributed architecture (Nginx, RabbitMQ, Analytics Worker, and multiple backend instances) is configured for local development using Docker Compose. The public demo uses a single backend instance on Render due to free-tier hosting limitations.
 
 ---
 

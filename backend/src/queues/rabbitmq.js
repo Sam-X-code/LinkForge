@@ -5,10 +5,9 @@ let channel;
 
 export const connectRabbitMQ = async () => {
 
-    while (true) {
+    if (process.env.NODE_ENV === "production") {
         try {
-
-            connection = await amqp.connect("amqp://rabbitmq");
+            connection = await amqp.connect(process.env.RABBITMQ_URL);
 
             channel = await connection.createChannel();
 
@@ -18,13 +17,33 @@ export const connectRabbitMQ = async () => {
 
             console.log("✅ RabbitMQ Connected");
 
+        } catch (err) {
+
+            console.log("⚠️ RabbitMQ unavailable");
+
+            return;
+        }
+
+        return;
+    }
+
+    // Local Docker: keep retrying
+    while (true) {
+        try {
+            connection = await amqp.connect("amqp://rabbitmq");
+
+            channel = await connection.createChannel();
+
+            await channel.assertQueue("click-events", {
+                durable: true
+            });
+
+            console.log("✅ RabbitMQ Connected");
             break;
 
-        } catch (error) {
-
+        } catch {
             console.log("⏳ Waiting for RabbitMQ...");
-
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            await new Promise(r => setTimeout(r, 5000));
         }
     }
 };

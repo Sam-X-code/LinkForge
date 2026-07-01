@@ -76,6 +76,7 @@ const redirectUrl = asyncHandler(async (req, res) => {
     const cachedData = await redisClient.get(shortCode);
 
     if (cachedData) {
+        console.log(`⚡ Cache HIT -> ${shortCode}`);
         const cached = JSON.parse(cachedData);
 
         if (cached.expiresAt && Date.now() > new Date(cached.expiresAt).getTime()) {
@@ -98,6 +99,7 @@ const redirectUrl = asyncHandler(async (req, res) => {
     }
 
 // if not in cache 
+    console.log(`📦 Cache MISS -> ${shortCode}`);  
     const url = await Url.findOne({
         shortCode
     });
@@ -144,6 +146,7 @@ const redirectUrl = asyncHandler(async (req, res) => {
             EX: ttl
         }
     );
+
 
     return res.redirect(url.originalUrl);
 });

@@ -6,6 +6,7 @@ import validator from "validator";
 import { nanoid } from "nanoid";
 import redisClient from "../config/redis.js";
 import calculateExpiry from "../utils/calculateExpiry.js";
+import { publishClickEvent } from "../queues/publisher.js";
 
 // ...............create short url .........................
 
@@ -86,16 +87,14 @@ const redirectUrl = asyncHandler(async (req, res) => {
             );
         }
 
-        await Url.updateOne(
-            { shortCode },
-            {
-                $inc: {
-                    clicks: 1
-                }
-            }
-        );
+        await publishClickEvent({
+            shortCode,
+            ip: req.ip,
+            userAgent: req.get("User-Agent"),
+            referrer: req.get("Referer") || "Direct"
+        });
 
-        return res.redirect(cached.originalUrl);
+        return res.redirect(url.originalUrl);
     }
 
 // if not in cache 
@@ -117,13 +116,12 @@ const redirectUrl = asyncHandler(async (req, res) => {
         );
     }
 
-    await Url.updateOne({ shortCode },
-        {
-            $inc: {
-                clicks: 1
-            }
-        }
-    );
+   await publishClickEvent({
+        shortCode,
+        ip: req.ip,
+        userAgent: req.get("User-Agent"),
+        referrer: req.get("Referer") || "Direct"
+    });
 
     let ttl = 3600;
 
@@ -136,7 +134,7 @@ const redirectUrl = asyncHandler(async (req, res) => {
             )
         );
     }
-    console.log("Caching:", shortCode);
+
     await redisClient.set(shortCode,
         JSON.stringify({
             originalUrl: url.originalUrl,
@@ -146,7 +144,6 @@ const redirectUrl = asyncHandler(async (req, res) => {
             EX: ttl
         }
     );
-    console.log("Cached successfully");
 
     return res.redirect(url.originalUrl);
 });

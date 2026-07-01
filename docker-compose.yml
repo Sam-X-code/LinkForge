@@ -1,0 +1,62 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: linkforge-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: unless-stopped
+
+  analytics-worker:
+    build: ./backend
+    container_name: linkforge-worker
+
+    command: node src/workers/analyticsWorker.js
+
+    env_file:
+      - ./backend/.env
+
+    depends_on:
+      - rabbitmq
+
+  backend1:
+    build: ./backend
+    container_name: linkforge-backend-1
+    env_file:
+      - ./backend/.env
+    environment:
+      INSTANCE_NAME: backend1
+    depends_on:
+      - rabbitmq
+
+  backend2:
+    build: ./backend
+    container_name: linkforge-backend-2
+    env_file:
+      - ./backend/.env
+    environment:
+      INSTANCE_NAME: backend2
+    depends_on:
+      - rabbitmq
+
+  backend3:
+    build: ./backend
+    container_name: linkforge-backend-3
+    env_file:
+      - ./backend/.env
+    environment:
+      INSTANCE_NAME: backend3
+    depends_on:
+      - rabbitmq
+
+  nginx:
+    image: nginx:alpine
+    container_name: linkforge-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
